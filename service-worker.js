@@ -7,7 +7,6 @@ const ASSETS = [
   "./style.css",
   "./app.js",
   "./manifest.json",
-
   "./imgs/logo-128.png",
   "./imgs/logo-256.png",
   "./imgs/logo-512.png",
