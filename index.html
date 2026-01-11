@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>OdontoCalc — Cálculos Clínicos em Odontologia</title>
+  <meta name="description" content="OdontoCalc é uma calculadora clínica para Odontologia com cálculos de anestesia, endodontia e conversões rápidas, otimizada para celular." />
+  <meta name="theme-color" content="#0b0f14" />
+
+  <!-- Favicon padrão -->
+  <link rel="icon" href="imgs/favicon.ico" />
+
+  <!-- Favicons PNG -->
+  <link rel="icon" type="image/png" sizes="16x16" href="imgs/favicon-16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="imgs/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="imgs/favicon-64.png" />
+
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Ícone para Android / PWA futura -->
+  <link rel="apple-touch-icon" sizes="128x128" href="imgs/logo-128.png" />
+  <link rel="apple-touch-icon" sizes="256x256" href="imgs/logo-256.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="imgs/logo-512.png" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- PWA / Mobile -->
+  <meta name="theme-color" content="#0b0f14" />
+
+  <!-- Android / Chrome -->
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- iOS / Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      
+      <div class="brand">
+        <img 
+          src="imgs/logo.svg"
+          alt="OdontoCalc"
+          class="logo-img"
+          loading="eager"
+        />
+        <div class="brand__text">
+          <div class="brand__name">OdontoCalc <span class="app-version" id="appVersion"></span></div> 
+          <div class="brand__tag">Cálculos clínicos rápidos</div>
+        </div>
+      </div>
+
+      <div class="header__actions">
+        <button id="installBtn" class="install-btn hidden" aria-label="Instalar aplicativo">
+          <svg class="install-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16l4-5h-3V4h-2v7H8l4 5z"></path>
+            <path d="M5 18h14v2H5z"></path>
+          </svg>
+          <span>Instalar</span>
+        </button>
+
+        <button class="themeBtn" id="themeBtn" type="button" aria-label="Alternar tema">
+          <span id="themeIcon" aria-hidden="true">🌙</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+
+  <main class="container main">
+    <section class="tabs" aria-label="Navegação">
+      <button class="tab is-active" data-tab="anestesia" type="button">Anestesia</button>
+      <button class="tab" data-tab="mgml" type="button">mg/ml & tubete</button>
+      <button class="tab" data-tab="endo" type="button">Endo</button>
+      <button class="tab" data-tab="tabelas" type="button">Tabelas</button>
+      <button class="tab" data-tab="sobre" type="button">Sobre</button>
+    </section>
+
+    <!-- ANESTESIA -->
+    <section class="panel is-active" id="tab-anestesia">
+      <div class="card">
+        <div class="card__title">Cálculo de dose máxima e tubetes</div>
+        <p class="muted">
+          Ajuda para estimar <b>mg máximos</b> e <b>tubetes máximos</b> (1,8 ml) a partir do peso do paciente.
+          Use como referência e sempre siga protocolos/condições clínicas.
+        </p>
+
+        <div class="grid">
+          <label class="field">
+            <span>Peso do paciente (kg)</span>
+            <input
+              id="pesoKg"
+              type="text"
+              inputmode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
+              placeholder="Ex: 70"
+            />
+          </label>
+
+          <label class="field">
+            <span>Anestésico</span>
+            <select id="anestesicoSelect"></select>
+          </label>
+
+          <label class="field">
+            <span>Vasoconstritor</span>
+            <select id="vasoSelect">
+              <option value="sem">Sem vasoconstritor</option>
+              <option value="com">Com vasoconstritor</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Volume do tubete (ml)</span>
+            <input id="tubeteMl" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" value="1.8" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn--ghost" id="btnLimparAnestesia" type="button">Limpar</button>
+        </div>
+
+        <div class="result muted" id="resAnestesia" aria-live="polite">
+          Preencha os dados acima para ver o cálculo.
+        </div>
+
+        <details class="details">
+          <summary>Notas rápidas (o que a planilha calcula)</summary>
+          <ul class="list">
+            <li><b>Dose máxima (mg)</b> = peso(kg) × doseMáx(mg/kg)</li>
+            <li><b>mg por tubete</b> = (mg/ml) × (ml por tubete)</li>
+            <li><b>Tubetes máximos</b> = dose máxima (mg) ÷ mg por tubete</li>
+          </ul>
+        </details>
+      </div>
+    </section>
+
+    <!-- MG/ML -->
+    <section class="panel" id="tab-mgml">
+      <div class="card">
+        <div class="card__title">Conversão rápida: % → mg/ml → mg/tubete</div>
+        <p class="muted">
+          Útil pra lembrar: <b>1%</b> = <b>10 mg/ml</b>. Então <b>2%</b> = 20 mg/ml, <b>4%</b> = 40 mg/ml, etc.
+        </p>
+
+        <div class="grid">
+          <label class="field">
+            <span>Concentração (%)</span>
+            <input id="concPct" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Ex: 2" />
+          </label>
+
+          <label class="field">
+            <span>Volume do tubete (ml)</span>
+            <input id="tubeteMl2" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" value="1.8" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn--ghost" id="btnLimparMgml" type="button">Limpar</button>
+        </div>
+
+        <div class="result muted" id="resMgml" aria-live="polite">
+          Informe a concentração e o volume do tubete.
+        </div>
+
+        <div class="miniCard">
+          <div class="miniCard__title">Atalho mental</div>
+          <div class="miniCard__body">
+            <code>mg/ml = % × 10</code> <span class="muted">(ex: 3% → 30 mg/ml)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENDO -->
+    <section class="panel" id="tab-endo">
+      <div class="card">
+        <div class="card__title">Endodontia: comprimento de trabalho</div>
+        <p class="muted">
+          Calcula o comprimento de trabalho subtraindo a “redução apical” (ex.: 0,5 a 1,0 mm).
+        </p>
+
+        <div class="grid">
+          <label class="field">
+            <span>Comprimento medido (mm)</span>
+            <input id="comprimentoMm" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" placeholder="Ex: 22" />
+          </label>
+
+          <label class="field">
+            <span>Redução apical (mm)</span>
+            <input id="reducaoMm" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" value="1" />
+          </label>
+
+          <label class="field">
+            <span>Resultado (mm)</span>
+            <input id="resultadoEndo" readonly placeholder="Preencha os valores acima" />
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn--ghost" id="btnLimparEndo" type="button">Limpar</button>
+        </div>
+
+        <div class="hint">
+          Dica: você pode usar com medida do localizador apical ou da radiografia (dependendo da técnica).
+        </div>
+      </div>
+    </section>
+
+    <!-- TABELAS -->
+    <section class="panel" id="tab-tabelas">
+      <div class="card">
+        <div class="card__title">Tabelas rápidas (referência)</div>
+        <p class="muted">
+          Tabelas de referência rápida (“colas”) para uso em clínica e estudo.
+          Os valores abaixo são guias práticos e podem variar conforme material, técnica,
+          equipamento e orientação do professor ou protocolo adotado.
+        </p>
+
+        <div class="twoCols">
+          <div class="miniCard">
+            <div class="miniCard__title">Anestésicos locais — referência rápida</div>
+            <div class="miniCard__body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Anestésico</th>
+                    <th>Concentração</th>
+                    <th>mg/ml</th>
+                    <th>Duração*</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Lidocaína</td><td>2%</td><td>20</td><td>Média</td></tr>
+                  <tr><td>Lidocaína</td><td>3%</td><td>30</td><td>Média</td></tr>
+                  <tr><td>Mepivacaína</td><td>2%</td><td>20</td><td>Média</td></tr>
+                  <tr><td>Mepivacaína</td><td>3%</td><td>30</td><td>Média</td></tr>
+                  <tr><td>Articaína</td><td>4%</td><td>40</td><td>Curta–Média</td></tr>
+                  <tr><td>Prilocaína</td><td>3%</td><td>30</td><td>Média</td></tr>
+                  <tr><td>Bupivacaína</td><td>0,5%</td><td>5</td><td>Longa</td></tr>
+                </tbody>
+              </table>
+              <div class="muted small">
+                *Duração aproximada. Pode variar conforme vasoconstritor, técnica e paciente.<br>
+                Regra rápida: <b>1% = 10 mg/ml</b>.
+              </div>
+            </div>
+          </div>
+
+          <div class="miniCard">
+            <div class="miniCard__title">Materiais odontológicos — colas práticas</div>
+            <div class="miniCard__body">
+              <ul class="list">
+                <li><b>Alginato</b>: excesso de água → molde fraco / pouca água → presa rápida</li>
+                <li><b>Ionômero de vidro</b>: pó em excesso ↑ resistência / líquido em excesso ↓ presa</li>
+                <li><b>Fosfato de zinco</b>: incorporar pó em pequenas porções, placa fria ajuda</li>
+                <li><b>Resina composta</b>: atenção ao tempo de trabalho sob luz ambiente</li>
+              </ul>
+              <div class="muted small">
+                Sempre respeite a proporção e o tempo indicados pelo fabricante.
+              </div>
+            </div>
+          </div>
+
+          <div class="miniCard">
+            <div class="miniCard__title">Radiologia intraoral — lembretes</div>
+            <div class="miniCard__body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Região</th>
+                    <th>Adulto</th>
+                    <th>Criança</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Anteriores</td><td>Menor tempo</td><td>Tempo reduzido</td></tr>
+                  <tr><td>Posteriores</td><td>Maior tempo</td><td>Tempo reduzido</td></tr>
+                </tbody>
+              </table>
+
+              <div class="muted small">
+                O tempo de exposição varia conforme aparelho, sensor/filme e técnica.
+                Use sempre a tabela específica do seu equipamento.
+              </div>
+            </div>
+          </div>
+
+          <div class="miniCard">
+            <div class="miniCard__title">Endodontia — atalhos rápidos</div>
+            <div class="miniCard__body">
+              <ul class="list">
+                <li><b>Comprimento de trabalho</b>: comprimento aparente − redução apical</li>
+                <li><b>Redução apical comum</b>: 0,5 a 1,0 mm</li>
+                <li><b>Irrigação</b>: hipoclorito + abundância > concentração isolada</li>
+                <li><b>Secagem</b>: cones de papel compatíveis com o último instrumento</li>
+              </ul>
+
+              <div class="muted small">
+                Valores variam conforme técnica, dente e orientação clínica.
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section class="panel" id="tab-sobre">
+      <div class="card">
+        <div class="card__title">Sobre o OdontoCalc</div>
+
+        <p class="muted">
+          O <b>OdontoCalc</b> é uma aplicação web progressiva (PWA), desenvolvida para auxiliar
+          <b>estudantes e cirurgiões-dentistas</b> em cálculos clínicos essenciais da Odontologia,
+          com foco em <b>segurança, clareza e uso rápido</b>, especialmente em dispositivos móveis.
+        </p>
+
+        <p class="muted">
+          O projeto centraliza cálculos que costumam gerar dúvidas ou demandar tempo durante a
+          prática clínica e acadêmica, como <b>anestesia local</b>, <b>conversões de concentração</b>
+          e <b>endodontia</b>, aplicando sempre critérios <b>conservadores e explicáveis</b>.
+        </p>
+
+        <div class="miniCard">
+          <div class="miniCard__title">Critérios de segurança adotados</div>
+          <div class="miniCard__body">
+            <ul class="list">
+              <li>Cálculo por <b>peso (mg/kg)</b>, respeitando presença ou não de vasoconstritor</li>
+              <li>Aplicação automática do <b>máximo absoluto (mg)</b>, quando definido</li>
+              <li>Limite de <b>número máximo de tubetes por sessão</b></li>
+              <li>Sempre é utilizado o <b>valor mais conservador</b> entre os limites</li>
+              <li>Valores de tubetes são <b>sempre arredondados para baixo</b></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="miniCard">
+          <div class="miniCard__title">Destaques visuais e alertas clínicos</div>
+          <div class="miniCard__body">
+            <ul class="list">
+              <li>Indicadores visuais para limites <b>seguros, de atenção e críticos</b></li>
+              <li>Destaque automático quando o <b>máximo absoluto</b> é o fator limitante</li>
+              <li>Identificação de anestésicos de <b>alto risco</b>, como a bupivacaína</li>
+              <li>Exibição do equivalente em <b>tubetes</b> do limite absoluto</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="miniCard">
+          <div class="miniCard__title">Tecnologia e uso</div>
+          <div class="miniCard__body">
+            <ul class="list">
+              <li>Desenvolvido em <b>HTML, CSS e JavaScript puro</b></li>
+              <li>Funciona offline e pode ser instalado como aplicativo (PWA)</li>
+              <li>Interface responsiva, otimizada para uso em celular</li>
+              <li>Sem dependência de servidores ou envio de dados</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="muted small">
+          <b>Aviso importante:</b> o OdontoCalc é uma ferramenta de apoio educacional e clínico.
+          Ele não substitui o julgamento profissional, a leitura de bulas, protocolos institucionais
+          ou a avaliação individual do paciente. Em caso de dúvida, utilize sempre o critério mais seguro.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <span class="muted small">© <span id="year"></span> OdontoCalc</span>
+      <span class="muted small footer-author">
+        Por Luiz Paulo
+        <a
+          href="https://github.com/luiz-lp/"
+          target="_blank"
+          rel="noopener"
+          aria-label="GitHub de Luiz Paulo"
+          class="github-link"
+        >
+          <svg
+            class="github-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.93.58.1.8-.25.8-.56v-2.17c-3.22.7-3.9-1.55-3.9-1.55-.53-1.33-1.3-1.68-1.3-1.68-1.06-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.73 1.27 3.4.97.1-.75.4-1.27.73-1.56-2.57-.29-5.28-1.28-5.28-5.7 0-1.26.45-2.3 1.2-3.12-.12-.3-.52-1.5.12-3.12 0 0 .98-.31 3.2 1.2a11.1 11.1 0 0 1 5.83 0c2.22-1.51 3.2-1.2 3.2-1.2.64 1.62.24 2.82.12 3.12.75.82 1.2 1.86 1.2 3.12 0 4.43-2.72 5.4-5.3 5.69.42.36.8 1.08.8 2.18v3.24c0 .31.21.67.8.56A11.52 11.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+          </svg>
+          luiz-lp
+        </a>
+      </span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js");
+      });
+    }
+  </script>
+</body>
+</html>
