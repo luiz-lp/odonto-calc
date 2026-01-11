@@ -61,24 +61,6 @@
 
 ---
 
-## 🚀 Rodar localmente
-
-```bash
-git clone https://github.com/luiz-lp/odonto-calc.git
-cd odonto-calc
-# Abra o index.html no navegador
-```
----
-
-## 🤝 Contribuindo
-
-1. Faça um fork
-2. Crie uma branch: `feature/minha-melhoria`
-3. Commit + push
-4. Abra um Pull Request
-
----
-
 ## 📄 Licença
 
 Este projeto usa **MIT License**. Veja o arquivo [`LICENSE`](LICENSE).

@@ -38,7 +38,7 @@ body{
   margin: 0 auto;
 }
 
-./* HEADER */
+/* HEADER */
 .header {
   position: sticky;
   top: 0;
@@ -532,3 +532,5 @@ body{
   border: 1px dashed rgba(239,68,68,0.45);
   background: rgba(239,68,68,0.10);
 }
+
+.hidden { display: none; }

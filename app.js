@@ -1,4 +1,4 @@
-const APP_VERSION = "1.0.6";
+const APP_VERSION = "1.0.7";
 const versionEl = document.getElementById("appVersion");
 if (versionEl) {
   versionEl.textContent = APP_VERSION;
@@ -307,7 +307,8 @@ $("vasoSelect").addEventListener("change", calcularAnestesia);
 
 $("btnLimparAnestesia").addEventListener("click", () => {
   $("pesoKg").value = "";
-  $("resAnestesia").textContent = "";
+  $("resAnestesia").innerHTML = "Preencha os dados acima para ver o cálculo.";
+  $("resAnestesia").classList.add("muted");
   localStorage.removeItem("odonto_pesoKg");
 });
 
@@ -344,7 +345,8 @@ $("tubeteMl2").addEventListener("input", calcularMgml);
 
 $("btnLimparMgml").addEventListener("click", () => {
   $("concPct").value = "";
-  $("resMgml").textContent = "";
+  $("resMgml").innerHTML = "Informe a concentração e o volume do tubete.";
+  $("resMgml").classList.add("muted");
   localStorage.removeItem("odonto_concPct");
 });
 
@@ -381,6 +383,9 @@ const installBtn = document.getElementById("installBtn");
 let deferredPrompt = null;
 
 if (window.matchMedia("(display-mode: standalone)").matches) {
+  installBtn.classList.add("hidden");
+}
+if (window.navigator.standalone === true) {
   installBtn.classList.add("hidden");
 }
 

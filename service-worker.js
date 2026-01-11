@@ -1,4 +1,4 @@
-const CACHE_VERSION = "v1.0.6";
+const CACHE_VERSION = "v1.0.7";
 const CACHE_NAME = `odontocalc-${CACHE_VERSION}`;
 
 const ASSETS = [
