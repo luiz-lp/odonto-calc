@@ -370,20 +370,52 @@ body{
 .miniCard__title{ font-weight: 800; margin-bottom: 8px; }
 .miniCard__body{ color: var(--muted); }
 
+.miniCard,
+.card {
+  overflow: hidden;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .table{
   width:100%;
   border-collapse: collapse;
+  min-width: 520px;
   overflow:hidden;
   border-radius: 12px;
+  table-layout: fixed;
 }
 .table th, .table td{
   border-bottom: 1px solid var(--border);
   padding: 10px 8px;
   text-align:left;
   font-size: 14px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 .table th{ color: var(--text); font-weight: 800; }
 .table td{ color: var(--muted); }
+
+/* Mobile: mais compacto */
+@media (max-width: 520px) {
+  .table th,
+  .table td {
+    padding: 8px 6px;
+    font-size: 13px;
+  }
+
+  .table th {
+    font-size: 12px;
+  }
+
+  .col-hide-mobile {
+    display: none;
+  }
+}
 
 .footer{
   padding: 18px 0 26px;

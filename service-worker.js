@@ -1,10 +1,12 @@
-const CACHE_VERSION = "v1.0.7";
+importScripts("./config.js");
+const CACHE_VERSION = `v${self.ODONTOCALC_CFG?.version || "0.0.0"}`;
 const CACHE_NAME = `odontocalc-${CACHE_VERSION}`;
 
 const ASSETS = [
   "./",
   "./index.html",
   "./style.css",
+  "./config.js",
   "./app.js",
   "./manifest.json",
   "./imgs/logo-128.png",

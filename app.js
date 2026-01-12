@@ -1,4 +1,5 @@
-const APP_VERSION = "1.0.7";
+const CFG = self.ODONTOCALC_CFG || { version: "0.0.0" };
+const APP_VERSION = CFG.version;
 const versionEl = document.getElementById("appVersion");
 if (versionEl) {
   versionEl.textContent = APP_VERSION;
@@ -170,6 +171,19 @@ persistIds.forEach(id => {
   el?.addEventListener("input", () => localStorage.setItem(`odonto_${id}`, el.value));
   el?.addEventListener("change", () => localStorage.setItem(`odonto_${id}`, el.value));
 });
+
+const savedAnest = localStorage.getItem("odonto_anestesicoSelect");
+
+if (!savedAnest && CFG?.defaultAnesthetic) {
+  anestSelect.value = CFG.defaultAnesthetic;
+  anestSelect.dispatchEvent(new Event("change"));
+}
+
+console.log("[CFG]", CFG);
+console.log("[savedAnest]", savedAnest);
+console.log("[defaultAnesthetic]", CFG?.defaultAnesthetic);
+console.log("[select current]", anestSelect.value);
+console.log("[options keys]", [...anestSelect.options].map(o => o.value));
 
 // ===== Anestesia calc =====
 function calcularAnestesia() {
